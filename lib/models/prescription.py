@@ -101,7 +101,7 @@ class Prescription:
             DELETE FROM prescriptions
             WHERE id = ?
         """    
-        CURSOR.execute(sql, (self.id))
+        CURSOR.execute(sql, (self.id,))
         CONN.commit()
 
         del type(self).all[self.id]
@@ -133,9 +133,9 @@ class Prescription:
             SELECT *
             FROM prescriptions
         """             
-        rows = CURSOR.execute(sql).fetchall(
+        rows = CURSOR.execute(sql).fetchall()
         return [cls.instance_from_db(row) for row in rows]    
-        )
+    
                        
     @classmethod
     def find_by_id(cls, id):

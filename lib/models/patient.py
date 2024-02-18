@@ -15,7 +15,7 @@ class Patient:
 
     @property
     def name(self):
-        return self.__name
+        return self._name
 
     @name.setter
     def name(self, name):
@@ -26,10 +26,10 @@ class Patient:
 
     @property
     def surname(self):
-        return self.__surname
+        return self._surname
 
     @surname.setter
-    def surname(self, name):
+    def surname(self, surname):
         if isinstance(surname, str) and len(surname):
             self._surname = surname
         else:
@@ -44,7 +44,7 @@ class Patient:
         if isinstance(address, str) and len(address):
             self._address = address
         else:
-            raise Exception("addres must be a non empty string")
+            raise Exception("address must be a non empty string")
             
 
     @classmethod
@@ -98,7 +98,7 @@ class Patient:
             SET name = ?, surname = ?, address = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.name, self.surname, self.address self.id))
+        CURSOR.execute(sql, (self.name, self.surname, self.address, self.id))
         CONN.commit()
 
     def delete(self):
@@ -119,10 +119,6 @@ class Patient:
         # Set the id to None
         self.id = None
 
-
-
-
-########################################################################################################
     @classmethod
     def instance_from_db(cls, row):
         """Return a Department object having the attribute values from the table row."""
