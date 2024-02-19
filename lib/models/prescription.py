@@ -5,13 +5,18 @@ class Prescription:
 
     all={}
 
-    def __init__(self, medication, quantity, refills, patient_id):
+    def __init__(self, medication, quantity, refills, patient_id, id = None):
         self.medication = medication
         self.quantity = quantity
         self.refills = refills 
         self.patient_id = patient_id
+        self.id = id
 
         #Prescriptions.all.add(self)
+    def __repr__(self):
+        return f"<Prescription {self.id}: {self.medication}, {self.quantity}, {self.refills}, {self.patient_id}>"    
+        
+
 
     @property
     def medication(self):
@@ -30,10 +35,10 @@ class Prescription:
 
     @quantity.setter
     def quantity(self, quantity):
-        if isinstance(quantity, int) and quantity.val>0:
+        if isinstance(quantity, int) and quantity > 0:
             self._quantity = quantity
         else:
-            raise Exception("quantity must be integer qith a value more than 0") 
+            raise Exception("quantity must be integer with a value more than 0") 
 
     @property
     def refills(self):
@@ -81,16 +86,19 @@ class Prescription:
 
     def save(self):
         sql = """
-            INSERT INTO prescriptions
+            INSERT INTO prescriptions (medication, quantity, refills, patient_id )
             VALUES (?,?,?,?)
         """
         CURSOR.execute(sql, (self.medication, self.quantity, self.refills, self.patient_id))
         CONN.commit()
 
+        self.id = CURSOR.lastrowid
+        type(self).all[self.id] = self
+
     def update(self):
         sql = """
             UPDATE prescriptions
-            SET medication = ?, quantity = ? refills = ?, patient_id = ?
+            SET medication = ?, quantity = ?, refills = ?, patient_id = ?
             WHERE id = ?
         """    
         CURSOR.execute(sql, (self.medication, self.quantity, self.refills, self.patient_id, self.id))

@@ -175,7 +175,7 @@ class Patient:
 
     def prescriptions(self):
         """Return list of prescriptions associated with current patient"""
-        from model.prescription import Prescription
+        from models.prescription import Prescription
         sql = """
             SELECT * FROM prescriptions
             WHERE patient_id = ?
@@ -183,6 +183,4 @@ class Patient:
         CURSOR.execute(sql, (self.id,),)
 
         rows = CURSOR.fetchall()
-        return [
-            Patient.instance_from_db(row) for row in rows
-        ]        
+        return [Prescription.instance_from_db(row) for row in rows]        
