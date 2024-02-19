@@ -3,9 +3,6 @@
 from models.__init__ import CONN, CURSOR
 from models.prescription import Prescription
 from models.patient import Patient
-# from faker import Faker
-# import random
-#fake = Faker()
 
 def seed_database():
     Prescription.drop_table()
@@ -22,14 +19,3 @@ def seed_database():
     
 seed_database()
 print("Seeded database")    
-    
-    # p1 = Patient.create(fake.name(), fake.surname(), fake.address())
-    # p2 = Patient.create(fake.name(), fake.surname(), fake.address())
-
-    # patients = [
-    #     Patient(
-    #         name = fake.name(),
-    #         surname = fake.surname(),
-    #         address = fake.address()
-    #     )
-    # for i on range(12)]

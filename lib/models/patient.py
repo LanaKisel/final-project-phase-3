@@ -7,8 +7,6 @@ class Patient:
         self.surname = surname
         self.address = address
         self.id = id
-
-        #Patients.all.append(self)
     
     def __repr__(self):
         return f"<Patient {self.id}: {self.name}, {self.surname}, {self.address}>"
@@ -115,7 +113,6 @@ class Patient:
 
         # Delete the dictionary entry using id as the key
         del type(self).all[self.id]
-
         # Set the id to None
         self.id = None
 
