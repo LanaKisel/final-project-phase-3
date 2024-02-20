@@ -51,3 +51,6 @@ Similarly to patient.py model, Prescription object has some attributes:  medicat
 create_table(cls), drop_table(cls), save(self), create(cls, medication, quantity, refills, patient_id), update(self), delete(self). 
  And methods for reading from the database:
   instance_from_db(cls, row), get_all(cls), find_by_id(cls, id), find_by_name(cls, name).
+
+## SEED.PY
+seed.py file helps to seed database. It has imports from prescription and patient. It has seed_database() function,  which clears database every time its called and creates new objects. After executing seed_database(), prints a success message: "Seeded database".    
