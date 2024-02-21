@@ -14,10 +14,10 @@ def find_patient_by_name():
         f'Patient {name} not found')
 
 def find_patient_by_id():
-    id_ = validate_input("Enter patinet's id: ", "id")       
-    patient = Patient.find_by_id(id_)
+    mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number")       
+    patient = Patient.find_by_id(mrn_number)
     print(patient) if patient else print(        
-    f'Patient {id_} not found')
+    f'Patient {mrn_number} not found')
 
 
 def create_patient():
@@ -31,10 +31,12 @@ def create_patient():
         print("Error creating patient: ", exc)
 
 def update_patient():
-    id_ = validate_input("Enter patinet's id: ", "id")
-    if patient := Patient.find_by_id(id_):
+    mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number")
+    if patient := Patient.find_by_id(mrn_number):
         try:
             name = input("Enter patient's name: ")
+            if len(name) == 0:
+                name = patient.name
             patient.name = name
             surname = input("Enter patient's surname: ")
             patient.surname = surname
@@ -45,15 +47,15 @@ def update_patient():
         except Exception as exc:
             print("Error updating patient: ", exc)
     else:
-        print(f'Patient {id_} not found')    
+        print(f'Patient {mrn_number} not found')    
 
 def delete_patient():
-    id_ = validate_input("Enter patinet's id: ", "id")
-    if patient := Patient.find_by_id(id_):
+    mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number")
+    if patient := Patient.find_by_id(mrn_number):
         patient.delete()
-        print(f'Success {id_} deleted')
+        print(f'Success {mrn_number} deleted')
     else:
-        print(f'Patient {id_} not found')
+        print(f'Patient {mrn_number} not found')
 
 def list_prescriptions():
     prescriptions = Prescription.get_all()
@@ -67,59 +69,60 @@ def find_prescription_by_name():
         f'Prescription {medication} not found')
 
 def find_prescription_by_id():
-    id_ = validate_input("Enter prescription  id: ", "id")
-    prescription = Prescription.find_by_id(id_)
+    rx_number = validate_input("Enter prescription number: ", "rx_number")
+    prescription = Prescription.find_by_id(rx_number)
     print(prescription) if prescription else print(
-        f'Prescription {id_} not found')
+        f'Prescription {rx_number} not found')
 
 def create_prescription():
     medication = input("Enter medication name: ")
     quantity = int(input("Enter quantity of medication: "))
     refills = int(input("Enter presciption's refills: "))
-    patient_id = int(input("Enter patient_id: "))
+    patient_mrn = int(input("Enter patient_mrn: "))
 
 
     try:
-        presciption= Prescription.create(medication, quantity, refills, patient_id)
+        presciption= Prescription.create(medication, quantity, refills, patient_mrn)
         print(f'Success: {presciption}')
     except Exception as exc:
         print("Error creating new prescription", exc)    
 
 def update_prescription():
-    id_ = validate_input("Enter rescription  id: ", "id")
-    
-    if prescription := Prescription.find_by_id(id_):
+    rx_number = validate_input("Enter prescription number: ", "rx_number")
+    if prescription := Prescription.find_by_id(rx_number):
         try:
             medication = input("Enter medication name: ")
+            if len(medication) == 0:
+                medication = prescription.medication    
             prescription.medication = medication
             quantity = validate_input("Enter medication quantity: ", "quantity")
             prescription.quantity = quantity
             refills = validate_input("Enter medication refills: ", "refills")
             prescription.refills = refills
-            patient_id =  validate_input("Enter patient's id:  ", "patient id")
-            prescription.patient_id = patient_id
+            patient_mrn =  validate_input("Enter patient's mrn:  ", "patient mrn")
+            prescription.patient_mrn = patient_mrn
             prescription.update()
             print(f'Success: {prescription}')
         except Exception as exc:
             print(f'Error updating prescription: ', exc) 
     else:
-        print(f'Prescription {id_} not found')
+        print(f'Prescription {rx_number} not found')
 
 def delete_prescription():
-    id_ = validate_input("Enter rescription  id: ")
-    if prescription := Prescription.find_by_id(id_):
+    rx_number = validate_input("Enter prescription  number: ", "rx_number")
+    if prescription := Prescription.find_by_id(rx_number):
         prescription.delete()
-        print(f'Success {id_} deleted')
+        print(f'Success {rx_number} deleted')
     else:
-        print(f'Prescription {id_} not found')
+        print(f'Prescription {rx_number} not found')
 
 def list_patient_prescriptions():
-
-    if patient := Patient.find_by_id(id_):
+    rx_number = validate_input("Enter patient's medical record number: ", "medical record number")
+    if patient := Patient.find_by_id(rx_number):
         for prescription in patient.prescriptions():
             print(prescription)
     else:
-        print(f'Patient {id_} not found')                    
+        print(f'Patient {rx_number} not found')                    
 
 def exit_program():
     print("Goodbye!")
@@ -131,3 +134,10 @@ def validate_input(prompt, property_name):
         print(f'{property_name} is not valid, try again')
         inpt = input(prompt)
     return int(inpt)
+
+# def validate_input(prompt, property_name):
+#     inpt= input(prompt)
+#     while not inpt.isdigit() or 0 <=int(inpt) > 6:
+#         print(f'{property_name} is not valid, try again')
+#         inpt = input(prompt)
+#     return int(inpt)

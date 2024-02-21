@@ -15,61 +15,99 @@ from helpers import (
     delete_prescription,
     list_patient_prescriptions
 )
-
+from pyfiglet import Figlet
+f = Figlet(font='slant') 
 
 def main():
-    while True:
-        menu()
-        choice = input("> ")
-        if choice == "0":
+    choice = 0
+    print(f.renderText('___PRESCRIPTIONS MANAGER___'))
+    print("Hello!\nWelcome to Prescriptions Manager!\nPlease use number keys to navigate.")
+    while choice != 3:
+        print('''
+                What module would you like to enter?
+                    1. - Patients
+                    2. - Prescriptions
+                    3. - Exit
+        ''')
+
+        choice = int(input())
+        user_choice = 0
+    
+        if choice == 1:
+            print("Entering Patient's Module...")
+            while user_choice != 6:
+                print('''
+                Please choose an option:
+                    1. - View Patients
+                    2. - Find a patient by name 
+                    3. - Add a patient
+                    4. - Edit a patient
+                    5. - Delete a patient 
+                    6. - Go back to main menu
+                    7. - Exit
+                ''')
+
+                user_choice = int(input())
+
+                if user_choice == 1:                    
+                    list_patients()
+
+                if user_choice ==2:
+                    find_patient_by_name()  
+
+                if user_choice == 3:
+                    create_patient()
+
+                if user_choice == 4:
+                    update_patient()
+
+                if user_choice == 5:
+                    delete_patient()
+
+                if user_choice == 7:
+                    exit_program()   
+
+        if choice == 2:
+            print("Entering Prescription's Module...")
+            while user_choice != 7:
+                print('''
+                Please choose an option:
+                    1. - View Prescriptions
+                    2. - Find a prescription by medication name 
+                    3. - Add a new prescription
+                    4. - Edit a prescription
+                    5. - Delete a prescription
+                    6. - List patient's prescriptions
+                    7. - Go back to main menu
+                    8. - Exit
+                ''')
+
+                user_choice = int(input())
+
+                if user_choice == 1:                    
+                    list_prescriptions()
+
+                if user_choice ==2:
+                    find_prescription_by_name()  
+
+                if user_choice == 3:
+                    create_prescription()
+
+                if user_choice == 4:
+                    update_prescription()
+
+                if user_choice == 5:
+                    delete_prescription()
+
+                if user_choice == 6:
+                    list_patient_prescriptions()    
+
+                if user_choice == 8:
+                    exit_program()   
+
+        if choice == 3:
+            print("Exiting the Prescription Manager...")
             exit_program()
-        elif choice == "1":
-            list_patients()
-        elif choice == "2":
-            find_patient_by_id()
-        elif choice == "3":
-            find_patient_by_name()
-        elif choice == "4":
-            create_patient()
-        elif choice == "5":
-            update_patient() 
-        elif choice == "6":
-            delete_patient()
-        elif choice == "7":
-            list_prescriptions()
-        elif choice == "8":
-            find_prescription_by_id()
-        elif choice == "9":
-            find_prescription_by_name()
-        elif choice == "10":
-            create_prescription()
-        elif choice == "11":
-            update_prescription()
-        elif choice == "12":
-            delete_prescription()
-        elif choice == "13":
-            list_patient_prescriptions()                                  
-        else:
-            print("Invalid choice")    
-
-
-def menu():
-    print("Please select an option:")
-    print("0. Exit the program")
-    print("1. List all patients")
-    print("2. Find patient by id")
-    print("3. Find patient by name")
-    print("4. Create new patient")
-    print("5. Update patient")
-    print("6. Delete patient")
-    print("7. List all prescriptions")
-    print("8. Find prescription by id")
-    print("9. Find prescription by medication name")
-    print("10. Create new prescription")
-    print("11. Update prescription")
-    print("12. Delete prescription")
-    print("13. List all patient's prescriptions")
-
 
 if __name__ == "__main__":
     main()
