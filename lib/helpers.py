@@ -31,7 +31,7 @@ def create_patient():
         print("Error creating patient: ", exc)
 
 def update_patient():
-    mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number")
+    mrn_number = validate_input("Enter patient's medical record number: ", "medical record number")
     if patient := Patient.find_by_id(mrn_number):
         try:
             name = input("Enter patient's name: ")
