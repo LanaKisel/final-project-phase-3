@@ -50,7 +50,7 @@ class Patient:
         """ Create a new table to persist the attributes of Patient instances """
         sql = """
             CREATE TABLE IF NOT EXISTS patients (
-            patient_mrn char(6) PRIMARY KEY,
+            id INTEGER PRIMARY KEY,
             name TEXT,
             surname TEXT,
             address TEXT)

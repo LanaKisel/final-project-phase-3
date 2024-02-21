@@ -8,6 +8,7 @@ ipdb = "*"
 pytest = "7.1.3"
 sqlalchemy = "*"
 alembic = "*"
+pyfiglet = "*"
 
 [dev-packages]
 
