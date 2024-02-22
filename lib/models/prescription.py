@@ -12,11 +12,8 @@ class Prescription:
         self.patient_id = patient_id
         self.id = id
 
-        #Prescriptions.all.add(self)
     def __repr__(self):
         return f"<Prescription {self.id}: {self.medication}, {self.quantity}, {self.refills}, {self.patient_id}>"    
-        
-
 
     @property
     def medication(self):

@@ -47,7 +47,6 @@ class Patient:
 
     @classmethod
     def create_table(cls):
-        """ Create a new table to persist the attributes of Patient instances """
         sql = """
             CREATE TABLE IF NOT EXISTS patients (
             id INTEGER PRIMARY KEY,
@@ -60,7 +59,6 @@ class Patient:
 
     @classmethod
     def drop_table(cls):
-        """ Drop the table that persists Patient instances """
         sql = """
             DROP TABLE IF EXISTS patients;
         """
@@ -68,9 +66,6 @@ class Patient:
         CONN.commit()
 
     def save(self):
-        """ Insert a new row with the name, surname, address values of the current Patient instance.
-        Update object id attribute using the primary key value of new row.
-        Save the object in local dictionary using table row's PK as dictionary key"""
         sql = """
             INSERT INTO patients (name, surname, address)
             VALUES (?, ?, ?)
@@ -84,13 +79,11 @@ class Patient:
 
     @classmethod
     def create(cls, name, surname, address):
-        """ Initialize a new Patient instance and save the object to the database """
         patient = cls(name, surname, address)
         patient.save()
         return patient
 
     def update(self):
-        """Update the table row corresponding to the current Patient instance."""
         sql = """
             UPDATE patients
             SET name = ?, surname = ?, address = ?
@@ -100,9 +93,6 @@ class Patient:
         CONN.commit()
 
     def delete(self):
-        """Delete the table row corresponding to the current Patient instance,
-        delete the dictionary entry, and reassign id attribute"""
-
         sql = """
             DELETE FROM patients
             WHERE id = ?
@@ -113,13 +103,10 @@ class Patient:
 
         # Delete the dictionary entry using id as the key
         del type(self).all[self.id]
-        # Set the id to None
         self.id = None
 
     @classmethod
     def instance_from_db(cls, row):
-        """Return a Department object having the attribute values from the table row."""
-
         # Check the dictionary for an existing instance using the row's primary key
         patient = cls.all.get(row[0])
         if patient:
@@ -136,7 +123,6 @@ class Patient:
 
     @classmethod
     def get_all(cls):
-        """Return a list containing a Patient object per row in the table"""
         sql = """
             SELECT *
             FROM patients
@@ -148,7 +134,6 @@ class Patient:
 
     @classmethod
     def find_by_id(cls, id):
-        """Return a Patient object corresponding to the table row matching the specified primary key"""
         sql = """
             SELECT *
             FROM patients
@@ -160,7 +145,6 @@ class Patient:
 
     @classmethod
     def find_by_name(cls, name):
-        """Return a Patient object corresponding to first table row matching specified name"""
         sql = """
             SELECT *
             FROM patients
@@ -171,7 +155,6 @@ class Patient:
         return cls.instance_from_db(row) if row else None
 
     def prescriptions(self):
-        """Return list of prescriptions associated with current patient"""
         from models.prescription import Prescription
         sql = """
             SELECT * FROM prescriptions

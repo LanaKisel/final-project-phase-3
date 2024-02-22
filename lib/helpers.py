@@ -39,8 +39,12 @@ def update_patient():
                 name = patient.name
             patient.name = name
             surname = input("Enter patient's surname: ")
+            if len(surname) == 0:
+                surname = patient.surname
             patient.surname = surname
             address = input("Enter patient's address: ")
+            if len(address) == 0:
+                address = patient.address
             patient.address = address
             patient.update()
             print(f'Success: {patient}')
@@ -134,10 +138,3 @@ def validate_input(prompt, property_name):
         print(f'{property_name} is not valid, try again')
         inpt = input(prompt)
     return int(inpt)
-
-# def validate_input(prompt, property_name):
-#     inpt= input(prompt)
-#     while not inpt.isdigit() or 0 <=int(inpt) > 6:
-#         print(f'{property_name} is not valid, try again')
-#         inpt = input(prompt)
-#     return int(inpt)

@@ -29,10 +29,10 @@ def main():
                     2. - Prescriptions
                     3. - Exit
         ''')
-
+         
         choice = int(input())
         user_choice = 0
-    
+
         if choice == 1:
             print("Entering Patient's Module...")
             while user_choice != 6:
