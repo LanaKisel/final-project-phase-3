@@ -121,12 +121,12 @@ def delete_prescription():
         print(f'Prescription {rx_number} not found')
 
 def list_patient_prescriptions():
-    rx_number = validate_input("Enter patient's medical record number: ", "medical record number")
-    if patient := Patient.find_by_id(rx_number):
+    mrn_number = validate_input("Enter patient's medical record number: ", "medical record number")
+    if patient := Patient.find_by_id(mrn_number):
         for prescription in patient.prescriptions():
             print(prescription)
     else:
-        print(f'Patient {rx_number} not found')                    
+        print(f'Patient {mrn_number} not found')                    
 
 def exit_program():
     print("Goodbye!")
