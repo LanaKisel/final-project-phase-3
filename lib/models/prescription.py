@@ -5,7 +5,8 @@ class Prescription:
 
     all={}
 
-    def __init__(self, medication, quantity, refills, patient_id, id = None):
+    def __init__(self, rx_number, medication, quantity, refills, patient_id, id = None):
+        self.rx_number = rx_number
         self.medication = medication
         self.quantity = quantity
         self.refills = refills 
@@ -13,7 +14,18 @@ class Prescription:
         self.id = id
 
     def __repr__(self):
-        return f"<Prescription {self.id}: {self.medication}, {self.quantity}, {self.refills}, {self.patient_id}>"    
+        return f"<Prescription {self.id}: {self.rx_number}, {self.medication}, {self.quantity}, {self.refills}, {self.patient_id}>"    
+
+    @property
+    def rx_number(self):
+        return self._rx_number
+
+    @rx_number.setter
+    def rx_number(self, rx_number):
+        if isinstance(rx_number, int) and rx_number > 0:
+            self._rx_number = rx_number
+        else:
+            raise Exception("rx_number must be an integer greater than 0")  
 
     @property
     def medication(self):
@@ -57,13 +69,14 @@ class Prescription:
         if type(patient_id) is int and Patient.find_by_id(patient_id):
             self._patient_id = patient_id
         else:
-            raise Exception("patient_id must reference patient in the database")              
+            raise Exception("patient_id must reference patient in the database")                        
 
     @classmethod
     def create_table(cls):
         sql="""
             CREATE TABLE IF NOT EXISTS prescriptions (
             id INTEGER PRIMARY KEY,
+            rx_number INTEGER UNIQUE,
             medication TEXT,
             quantity INTEGER,
             refills INTEGER,
@@ -83,10 +96,10 @@ class Prescription:
 
     def save(self):
         sql = """
-            INSERT INTO prescriptions (medication, quantity, refills, patient_id )
-            VALUES (?,?,?,?)
+            INSERT INTO prescriptions (rx_number, medication, quantity, refills, patient_id )
+            VALUES (?,?,?,?,?)
         """
-        CURSOR.execute(sql, (self.medication, self.quantity, self.refills, self.patient_id))
+        CURSOR.execute(sql, (self.rx_number, self.medication, self.quantity, self.refills, self.patient_id))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
@@ -95,10 +108,10 @@ class Prescription:
     def update(self):
         sql = """
             UPDATE prescriptions
-            SET medication = ?, quantity = ?, refills = ?, patient_id = ?
+            SET rx_number = ?, medication = ?, quantity = ?, refills = ?, patient_id = ?
             WHERE id = ?
         """    
-        CURSOR.execute(sql, (self.medication, self.quantity, self.refills, self.patient_id, self.id))
+        CURSOR.execute(sql, (self.rx_number, self.medication, self.quantity, self.refills, self.patient_id, self.id))
         CONN.commit()
 
     def delete(self):
@@ -114,7 +127,7 @@ class Prescription:
 
     @classmethod
     def create(cls, medication, quantity, refills, patient_id):
-        prescription = cls(medication, quantity, refills, patient_id)
+        prescription = cls(cls.generate_rx_number(), medication, quantity, refills, patient_id)
         prescription.save()
         return prescription
 
@@ -122,12 +135,13 @@ class Prescription:
     def instance_from_db(cls, row):
         prescription = cls.all.get(row[0])
         if prescription:
-            prescription.medication = row[1]
-            prescription.quantity = row[2]
-            prescription.refills = row[3]
-            prescription.patient_id = row[4]
+            prescription.rx_number = row[1]
+            prescription.medication = row[2]
+            prescription.quantity = row[3]
+            prescription.refills = row[4]
+            prescription.patient_id = row[5]
         else:
-            prescription = cls(row[1], row[2], row[3], row[4])
+            prescription = cls(row[1], row[2], row[3], row[4], row[5])
             prescription.id = row[0]
             cls.all[prescription.id] = prescription   
         return prescription
@@ -161,3 +175,13 @@ class Prescription:
         """
         row = CURSOR.execute(sql, (medication,)).fetchone()
         return cls.instance_from_db(row) if row else None
+
+    @classmethod
+    def generate_rx_number(cls):
+        sql = """
+            SELECT rx_number
+            FROM prescriptions
+            ORDER BY rx_number desc LIMIT 1
+        """    
+        row = CURSOR.execute(sql).fetchone()
+        return row[0]+1        

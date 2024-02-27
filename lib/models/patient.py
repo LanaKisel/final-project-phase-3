@@ -119,16 +119,13 @@ class Patient:
 
     @classmethod
     def instance_from_db(cls, row):
-        # Check the dictionary for an existing instance using the row's primary key
         patient = cls.all.get(row[0])
         if patient:
-            # ensure attributes match row values in case local instance was modified
             patient.name = row[1]
             patient.surname = row[2]
             patient.address = row[3]
             patient.mrn = row[4]
         else:
-            # not in dictionary, create new instance and add to dictionary
             patient = cls(row[1], row[2], row[3], row[4])
             patient.id = row[0]
             cls.all[patient.id] = patient
@@ -140,21 +137,19 @@ class Patient:
             SELECT *
             FROM patients
         """
-
         rows = CURSOR.execute(sql).fetchall()
-
         return [cls.instance_from_db(row) for row in rows]
 
-    # @classmethod
-    # def find_by_id(cls, id):
-    #     sql = """
-    #         SELECT *
-    #         FROM patients
-    #         WHERE id = ?
-    #     """
+    @classmethod
+    def find_by_id(cls, id):
+        sql = """
+            SELECT *
+            FROM patients
+            WHERE id = ?
+        """
 
-    #     row = CURSOR.execute(sql, (id,)).fetchone()
-    #     return cls.instance_from_db(row) if row else None
+        row = CURSOR.execute(sql, (id,)).fetchone()
+        return cls.instance_from_db(row) if row else None
 
     @classmethod
     def find_by_mrn(cls, mrn):

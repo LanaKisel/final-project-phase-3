@@ -126,11 +126,14 @@ def create_prescription():
     quantity = int(input("Enter quantity of medication: "))
     refills = int(input("Enter presciption's refills: "))
     patient_mrn = int(input("Enter patient_mrn: "))
-
-
     try:
-        presciption= Prescription.create(medication, quantity, refills, patient_mrn)
-        print(f'Success: {presciption}')
+        patient = Patient.find_by_mrn(patient_mrn)
+        if patient:
+            prescription= Prescription.create(medication, quantity, refills, patient.id)
+            print(f'Successfully created prescription.\n\t Precription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\n\tRefills: {prescription.refills}\n\tPatient\'s name: {patient.name}.')
+        else:
+            print(f"Patient with MRN: {patient_mrn} is not found ")    
+          
     except Exception as exc:
         print("Error creating new prescription", exc)    
 
@@ -149,7 +152,7 @@ def update_prescription():
             patient_mrn =  validate_input("Enter patient's mrn:  ", "patient mrn")
             prescription.patient_mrn = patient_mrn
             prescription.update()
-            print(f'Success: {prescription}')
+            print(f'Successfully updated prescription.\n\t Precription rx_number: {prescription.rx_number}.\n\tMedication name: {presciption.medication}\n\tQty: {prescription.quantity}\n\tRefills: {prescription.refills}\n\tPatient\'s name: {patient.name}.')
         except Exception as exc:
             print(f'Error updating prescription: ', exc) 
     else:
@@ -165,7 +168,7 @@ def delete_prescription():
 
 def list_patient_prescriptions():
     mrn_number = validate_input("Enter patient's medical record number: ", "medical record number")
-    if patient := Patient.find_by_id(mrn_number):
+    if patient := Patient.find_by_mrn(mrn_number):
         for prescription in patient.prescriptions():
             print(f'Prescription:\n\tMedication name: {prescription.medication}.\n\tQty: {prescription.quantity}.\tRefills: {prescription.refills}.\n\tPatient\'s name: {patient.name}.')
     else:

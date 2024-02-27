@@ -12,10 +12,10 @@ def seed_database():
 
     lilly = Patient.create("Lilly", "Jefferson", "982 Fadel Overpass Suite 578", 134597)
     paul = Patient.create("Paul", "Griffin", "5167 Boyle Plains", 345086)
-    ondansetron = Prescription.create("ondansetron", 30, 3, 1)
-    metronidazole = Prescription.create("metronidazole", 7, 0, 1)
-    amoxicillin = Prescription.create("amoxicillin", 21, 0, 2)
-    ibuprofen = Prescription.create("ibuprofen", 30, 3, 2 ) 
+    ondansetron = Prescription.create(345624, "ondansetron", 30, 3, 1)
+    metronidazole = Prescription.create(235738, "metronidazole", 7, 0, 1)
+    amoxicillin = Prescription.create(124860, "amoxicillin", 21, 0, 2)
+    ibuprofen = Prescription.create(495786, "ibuprofen", 30, 3, 2 ) 
     
 seed_database()
 print("Seeded database")    
