@@ -5,18 +5,24 @@ from models.patient import Patient
 def list_patients():
     patients = Patient.get_all()
     for patient in patients:
-        print(patient)
+        print(f"Patient:\n\tPatient MRN: {patient.mrn}\n\tName: {patient.name}\n\tSurname: {patient.surname}\n\tAddress: {patient.address}")
 
 def find_patient_by_name():
     name = input("Enter patient's name: ")
     patient = Patient.find_by_name(name)
-    print(patient) if patient else print(
+    print(f"Patient:\n\tPatient MRN: {patient.mrn}\n\tName: {patient.name}\n\tSurname: {patient.surname}\n\tAddress: {patient.address}") if patient else print(
         f'Patient {name} not found')
 
-def find_patient_by_id():
+# def find_patient_by_id():
+#     mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number")       
+#     patient = Patient.find_by_id(mrn_number)
+#     print(f"Patient:\n\tPatient MRN: {patient.mrn}\n\tName: {patient.name}\n\tSurname: {patient.surname}\n\tAddress: {patient.address}") if patient else print(        
+#     f'Patient {mrn_number} not found')
+
+def find_patient_by_mrn():
     mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number")       
-    patient = Patient.find_by_id(mrn_number)
-    print(patient) if patient else print(        
+    patient = Patient.find_by_mrn(mrn_number)
+    print(f"Patient:\n\tPatient MRN: {patient.mrn}\n\tName: {patient.name}\n\tSurname: {patient.surname}\n\tAddress: {patient.address}") if patient else print(        
     f'Patient {mrn_number} not found')
 
 
@@ -24,15 +30,39 @@ def create_patient():
     name = input("Enter patient's name: ")
     surname = input("Enter patient's surname: ")
     address = input("Enter patient's address: ")
+    mrn = int(input("Enter patient's medical record number: "))
     try:
-        patient = Patient.create(name, surname, address)
-        print(f'Success: {patient}')
+        patient = Patient.create(name, surname, address, mrn)
+        print(f'Successfully added a new patient.\n\tPatient:\n\tPatient MRN: {patient.mrn}\n\tName: {patient.name}\n\tSurname: {patient.surname}\n\tAddress: {patient.address}"')
     except Exception as exc:
         print("Error creating patient: ", exc)
 
+# def update_patient():
+#     mrn_number = validate_input("Enter patient's medical record number: ", "medical record number")
+#     if patient := Patient.find_by_id(mrn_number):
+#         try:
+#             name = input("Enter patient's name: ")
+#             if len(name) == 0:
+#                 name = patient.name
+#             patient.name = name
+#             surname = input("Enter patient's surname: ")
+#             if len(surname) == 0:
+#                 surname = patient.surname
+#             patient.surname = surname
+#             address = input("Enter patient's address: ")
+#             if len(address) == 0:
+#                 address = patient.address
+#             patient.address = address
+#             patient.update()
+#             print(f'Success: {patient}')
+#         except Exception as exc:
+#             print("Error updating patient: ", exc)
+#     else:
+#         print(f'Patient {mrn_number} not found')    
+
 def update_patient():
     mrn_number = validate_input("Enter patient's medical record number: ", "medical record number")
-    if patient := Patient.find_by_id(mrn_number):
+    if patient := Patient.find_by_mrn(mrn_number):
         try:
             name = input("Enter patient's name: ")
             if len(name) == 0:
@@ -46,16 +76,28 @@ def update_patient():
             if len(address) == 0:
                 address = patient.address
             patient.address = address
+            mrn = input("Enter patient's MRN: ")
+            if len(mrn) == 0:
+                mrn = patient.mrn
+            patient.mrn = mrn
             patient.update()
             print(f'Success: {patient}')
         except Exception as exc:
             print("Error updating patient: ", exc)
     else:
-        print(f'Patient {mrn_number} not found')    
+        print(f'Patient {mrn_number} not found') 
+
+# def delete_patient():
+#     mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number")
+#     if patient := Patient.find_by_id(mrn_number):
+#         patient.delete()
+#         print(f'Success {mrn_number} deleted')
+#     else:
+#         print(f'Patient {mrn_number} not found')
 
 def delete_patient():
     mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number")
-    if patient := Patient.find_by_id(mrn_number):
+    if patient := Patient.find_by_mrn(mrn_number):
         patient.delete()
         print(f'Success {mrn_number} deleted')
     else:
@@ -64,7 +106,8 @@ def delete_patient():
 def list_prescriptions():
     prescriptions = Prescription.get_all()
     for prescription in prescriptions:
-        print(prescription)
+        patient = Patient.find_by_id(prescription.patient_id)
+        print(f"Prescription:\n\tMedication name: {prescription.medication}.\n\tQty: {prescription.quantity}.\tRefills: {prescription.refills}.\n\tPatient's name: {patient.name}.")
 
 def find_prescription_by_name():
     medication = input("Enter medication name: ")
@@ -124,7 +167,7 @@ def list_patient_prescriptions():
     mrn_number = validate_input("Enter patient's medical record number: ", "medical record number")
     if patient := Patient.find_by_id(mrn_number):
         for prescription in patient.prescriptions():
-            print(prescription)
+            print(f'Prescription:\n\tMedication name: {prescription.medication}.\n\tQty: {prescription.quantity}.\tRefills: {prescription.refills}.\n\tPatient\'s name: {patient.name}.')
     else:
         print(f'Patient {mrn_number} not found')                    
 

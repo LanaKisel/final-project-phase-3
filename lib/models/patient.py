@@ -2,14 +2,15 @@ from models.__init__ import CURSOR, CONN
 class Patient:
     all = {}
 
-    def __init__(self, name, surname, address, id = None):
+    def __init__(self, name, surname, address, mrn, id = None):
         self.name = name
         self.surname = surname
         self.address = address
+        self.mrn = mrn
         self.id = id
     
     def __repr__(self):
-        return f"<Patient {self.id}: {self.name}, {self.surname}, {self.address}>"
+        return f"<Patient {self.id}: {self.name}, {self.surname}, {self.address}, {self.mrn}>"
 
     @property
     def name(self):
@@ -43,6 +44,17 @@ class Patient:
             self._address = address
         else:
             raise Exception("address must be a non empty string")
+
+    @property
+    def mrn(self):
+        return self._mrn
+
+    @mrn.setter
+    def mrn(self, mrn):
+        if isinstance(mrn, int) and  mrn > 0:
+            self._mrn = mrn
+        else:
+            raise Exception('mrn must be an int')                
             
 
     @classmethod
@@ -52,7 +64,8 @@ class Patient:
             id INTEGER PRIMARY KEY,
             name TEXT,
             surname TEXT,
-            address TEXT)
+            address TEXT,
+            mrn INTEGER UNIQUE)
         """
         CURSOR.execute(sql)
         CONN.commit()
@@ -67,41 +80,40 @@ class Patient:
 
     def save(self):
         sql = """
-            INSERT INTO patients (name, surname, address)
-            VALUES (?, ?, ?)
+            INSERT INTO patients (name, surname, address, mrn)
+            VALUES (?, ?, ?, ?)
         """
 
-        CURSOR.execute(sql, (self.name, self.surname, self.address))
+        CURSOR.execute(sql, (self.name, self.surname, self.address, self.mrn))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
     @classmethod
-    def create(cls, name, surname, address):
-        patient = cls(name, surname, address)
+    def create(cls, name, surname, address, mrn):
+        patient = cls(name, surname, address, mrn)
         patient.save()
         return patient
 
     def update(self):
         sql = """
             UPDATE patients
-            SET name = ?, surname = ?, address = ?
+            SET name = ?, surname = ?, address = ?, mrn = ? 
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.name, self.surname, self.address, self.id))
+        CURSOR.execute(sql, (self.name, self.surname, self.address, self.mrn, self.id))
         CONN.commit()
 
     def delete(self):
         sql = """
             DELETE FROM patients
-            WHERE id = ?
+            WHERE mrn = ?
         """
 
-        CURSOR.execute(sql, (self.id,))
+        CURSOR.execute(sql, (self.mrn,))
         CONN.commit()
 
-        # Delete the dictionary entry using id as the key
         del type(self).all[self.id]
         self.id = None
 
@@ -114,9 +126,10 @@ class Patient:
             patient.name = row[1]
             patient.surname = row[2]
             patient.address = row[3]
+            patient.mrn = row[4]
         else:
             # not in dictionary, create new instance and add to dictionary
-            patient = cls(row[1], row[2], row[3])
+            patient = cls(row[1], row[2], row[3], row[4])
             patient.id = row[0]
             cls.all[patient.id] = patient
         return patient
@@ -132,15 +145,26 @@ class Patient:
 
         return [cls.instance_from_db(row) for row in rows]
 
+    # @classmethod
+    # def find_by_id(cls, id):
+    #     sql = """
+    #         SELECT *
+    #         FROM patients
+    #         WHERE id = ?
+    #     """
+
+    #     row = CURSOR.execute(sql, (id,)).fetchone()
+    #     return cls.instance_from_db(row) if row else None
+
     @classmethod
-    def find_by_id(cls, id):
+    def find_by_mrn(cls, mrn):
         sql = """
             SELECT *
             FROM patients
-            WHERE id = ?
+            WHERE mrn = ?
         """
 
-        row = CURSOR.execute(sql, (id,)).fetchone()
+        row = CURSOR.execute(sql, (mrn,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
     @classmethod
