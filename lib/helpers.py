@@ -141,7 +141,7 @@ def create_prescription():
         patient = Patient.find_by_mrn(patient_mrn)
         if patient:
             prescription= Prescription.create(medication, quantity, refills, patient.id)
-            print(f'Successfully created prescription.\n\t3Precription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\n\tRefills: {prescription.refills}\n\tPatient:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
+            print(f'Successfully created prescription.💊\n\t3Precription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\n\tRefills: {prescription.refills}\n\tPatient:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
         else:
             print(f"Patient with MRN: {patient_mrn} is not found ")    
           
@@ -149,7 +149,7 @@ def create_prescription():
         print("Error creating new prescription", exc)    
 
 def update_prescription():
-    rx_number = validate_input("Enter prescription number: ", "rx_number")
+    rx_number = validate_input("Enter prescription number: ", "RX_number", 1)
     if prescription := Prescription.find_by_rx_number(rx_number):
         try:
             patient = Patient.find_by_id(prescription.patient_id)
@@ -157,27 +157,17 @@ def update_prescription():
             if len(medication) == 0:
                 medication = prescription.medication    
             prescription.medication = medication
-            unsafe_input_quantity = input("Enter medication quantity: ")
-            if unsafe_input_quantity == "":
-                unsafe_input_quantity = prescription.quantity
-            elif unsafe_input_quantity == int:
-                prescription.quantity = unsafe_input_quantity
-            else:
-                raise Exception("Quantity must be an integer")
-            unsafe_input_refills = input("Enter prescription's refills: ")
-            if unsafe_input_refills == "":
-                unsafe_input_refills = prescription.refills
-            elif unsafe_input_refills == int:
-                prescription.refills = unsafe_input_refills
-            else:
-                raise Exception("Refills must be an integer")
-            unsafe_input_patient_mrn = input("Enter patient's mrn:  ")
-            if unsafe_input_patient_mrn == "":
-                unsafe_input_patient_mrn = patient.mrn
-            elif unsafe_input_patient_mrn == int:
-                patient.mrn = unsafe_input_patient_mrn
-            else:
-                raise Exception("Patient MRN must be numbers")        
+            quantity = validate_input("Enter medication quantity: ", "Quantity", 1, prescription.quantity)           
+            refills = validate_input("Enter prescription's refills: ", 'Refills', 0, prescription.refills)
+            mrn = validate_input("Enter patient's mrn:  ", "Patient's MRN", 1, patient.mrn)
+
+            # unsafe_input_patient_mrn = input("Enter patient's mrn:  ")
+            # if unsafe_input_patient_mrn == "":
+            #     unsafe_input_patient_mrn = patient.mrn
+            # elif unsafe_input_patient_mrn == int:
+            #     patient.mrn = unsafe_input_patient_mrn
+            # else:
+            #     raise Exception("Patient MRN must be numbers")        
             prescription.update()
             print(f'Successfully updated prescription.\n\tPrecription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\n\tRefills: {prescription.refills}\n\tPatient:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
         except Exception as exc:
@@ -203,12 +193,18 @@ def list_patient_prescriptions():
         print(f'Patient {mrn_number} not found')                    
 
 def exit_program():
-    print("Goodbye!")
+    print("Goodbye!👋")
     exit()
 
-def validate_input(prompt, property_name):
-    inpt= input(prompt)        
-    while not inpt.isdigit() or int(inpt) <= 0 :
-        print(f'{property_name} is not valid, try again')
-        inpt = input(prompt)
+def validate_input(prompt, property_name, minimum_value, default_value=None):
+    inpt= input(prompt)
+    if inpt == '' and not default_value == None:
+        inpt = default_value
+        print(f'\t👉 Using {inpt} for {property_name}')
+    if inpt == '' and default_value == None:
+        print(f"{property_name} is required.")
+        inpt = validate_input(prompt, property_name, minimum_value, default_value)    
+    if type(inpt)== int and inpt < minimum_value:
+        print(f"{inpt} is less than minimum required value for {property_name}. Please try again.")
+        validate_input(prompt, property_name, minimum_value, default_value)
     return int(inpt)
