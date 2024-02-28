@@ -61,7 +61,7 @@ def create_patient():
 #         print(f'Patient {mrn_number} not found')    
 
 def update_patient():
-    mrn_number = validate_input("Enter patient's medical record number: ", "medical record number")
+    mrn_number = validate_input("Enter patient's medical record number: ", "medical record number", 1, patient.mrn)
     if patient := Patient.find_by_mrn(mrn_number):
         try:
             name = input("Enter patient's name: ")
@@ -96,7 +96,7 @@ def update_patient():
 #         print(f'Patient {mrn_number} not found')
 
 def delete_patient():
-    mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number")
+    mrn_number = validate_input("Enter patinet's medical record number: ", "medical record number", 1)
     if patient := Patient.find_by_mrn(mrn_number):
         patient.delete()
         print(f'Successfully deleted patient {patient.mrn}\n\t{patient.name}\t{patient.surname}\n\t{patient.address}')
@@ -107,44 +107,42 @@ def list_prescriptions():
     prescriptions = Prescription.get_all()
     for prescription in prescriptions:
         patient = Patient.find_by_id(prescription.patient_id)
-        print(f"Prescription:\n\tRX number: {prescription.rx_number}\n\tMedication name: {prescription.medication}.\n\tQty: {prescription.quantity}.\tRefills: {prescription.refills}.\nPatient:\n\tName: {patient.name}\tSurname: {patient.surname}\n\tPatient MRN: {patient.mrn}")
+        print(f"Prescription💊:\n\tRX number: {prescription.rx_number}\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}\nPatient😷:\n\tName: {patient.name}\tSurname: {patient.surname}\n\tPatient MRN: {patient.mrn}")
 
 def find_prescription_by_name():
-    medication = input("Enter medication name: ")
+    medication = validate_string_input("Enter medication name: ", "Medication name")
     prescription = Prescription.find_by_name(medication)
-    patient = Patient.find_by_id(prescription.patient_id)
     if prescription:
-        print(f"Prescription:\n\tMedication name: {prescription.medication}.\n\tQty: {prescription.quantity}.\tRefills: {prescription.refills}.\nPatient:\n\tName: {patient.name}\tSurname: {patient.surname}\n\tPatient MRN: {patient.mrn}") 
+        patient = Patient.find_by_id(prescription.patient_id)
+        print(f"Prescription:\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}\nPatient:\n\tName: {patient.name}\tSurname: {patient.surname}\n\tPatient MRN: {patient.mrn}") 
     else:
-         print(f'Prescription {medication} not found')
-
-# def find_prescription_by_id():
-#     rx_number = validate_input("Enter prescription number: ", "rx_number")
-#     prescription = Prescription.find_by_id(rx_number)
-#     print(prescription) if prescription else print(
-#         f'Prescription {rx_number} not found')
+        print(f'Prescription {medication} not found')
 
 def find_prescription_by_rx_number():
-    rx_number = validate_input("Enter prescription number: ", "rx_number")
+    rx_number = validate_input("Enter prescription number: ", "rx_number", 1)
     prescription = Prescription.find_by_rx_number(rx_number)
     if prescription:
+        patient = Patient.find_by_id(prescription.patient_id)
         print(f"Prescription:\n\tMedication name: {prescription.medication}.\n\tQty: {prescription.quantity}.\tRefills: {prescription.refills}.\nPatient:\n\tName: {patient.name}\tSurname: {patient.surname}\n\tPatient MRN: {patient.mrn}") 
     else:
         print(f'Prescription {rx_number} not found')        
 
 def create_prescription():
-    medication = input("Enter medication name: ")
-    quantity = int(input("Enter quantity of medication: "))
-    refills = int(input("Enter prescription's refills: "))
-    patient_mrn = int(input("Enter patient_mrn: "))
+    medication = validate_string_input("Enter medication name: ", "Medication name")
+    quantity = validate_input("Enter medication quantity: ", "Quantity", 1)           
+    refills = validate_input("Enter prescription's refills: ", 'Refills', 0)
+    mrn = validate_input("Enter patient's mrn:  ", "Patient's MRN", 1)
+    # medication = input("Enter medication name: ")
+    # quantity = int(input("Enter quantity of medication: "))
+    # refills = int(input("Enter prescription's refills: "))
+    # patient_mrn = int(input("Enter patient_mrn: "))
     try:
-        patient = Patient.find_by_mrn(patient_mrn)
+        patient = Patient.find_by_mrn(mrn)
         if patient:
             prescription= Prescription.create(medication, quantity, refills, patient.id)
-            print(f'Successfully created prescription.💊\n\t3Precription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\n\tRefills: {prescription.refills}\n\tPatient:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
+            print(f'Successfully created prescription.💊\n\tPrecription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}\n\tPatient 😷:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
         else:
-            print(f"Patient with MRN: {patient_mrn} is not found ")    
-          
+            print(f"Patient with MRN: {mrn} is not found ")             
     except Exception as exc:
         print("Error creating new prescription", exc)    
 
@@ -152,43 +150,34 @@ def update_prescription():
     rx_number = validate_input("Enter prescription number: ", "RX_number", 1)
     if prescription := Prescription.find_by_rx_number(rx_number):
         try:
-            patient = Patient.find_by_id(prescription.patient_id)
-            medication = input("Enter medication name: ")
-            if len(medication) == 0:
-                medication = prescription.medication    
+            patient = Patient.find_by_id(prescription.patient_id)         
+            medication = validate_string_input("Enter medication name: ", "Medication name", prescription.medication)
             prescription.medication = medication
             quantity = validate_input("Enter medication quantity: ", "Quantity", 1, prescription.quantity)           
             refills = validate_input("Enter prescription's refills: ", 'Refills', 0, prescription.refills)
             mrn = validate_input("Enter patient's mrn:  ", "Patient's MRN", 1, patient.mrn)
-
-            # unsafe_input_patient_mrn = input("Enter patient's mrn:  ")
-            # if unsafe_input_patient_mrn == "":
-            #     unsafe_input_patient_mrn = patient.mrn
-            # elif unsafe_input_patient_mrn == int:
-            #     patient.mrn = unsafe_input_patient_mrn
-            # else:
-            #     raise Exception("Patient MRN must be numbers")        
             prescription.update()
-            print(f'Successfully updated prescription.\n\tPrecription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\n\tRefills: {prescription.refills}\n\tPatient:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
+            print(f'Successfully updated prescription💊\n\tPrecription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}\n\tPatient 😷:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
         except Exception as exc:
             print(f'Error updating prescription: ', exc) 
     else:
         print(f'Prescription {rx_number} not found')
 
 def delete_prescription():
-    rx_number = validate_input("Enter prescription  number: ", "rx_number")
+    rx_number = validate_input("Enter prescription  number: ", "RX_number", 1)
     if prescription := Prescription.find_by_rx_number(rx_number):
         patient = Patient.find_by_id(prescription.patient_id)
         prescription.delete()
-        print(f'Successfully deleted prescription with RX number: {prescription.rx_number}\n\tMedication name:{prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}\n\ttPatient:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
+        print(f'Successfully deleted prescription💊:\n\tRX number: {prescription.rx_number}\n\tMedication name:{prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}\n\tPatient😷:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
     else:
         print(f'Prescription {rx_number} not found')
 
 def list_patient_prescriptions():
-    mrn_number = validate_input("Enter patient's medical record number: ", "medical record number")
+    mrn_number = validate_input("Enter patient's medical record number: ", "Patient MRN", 1)
     if patient := Patient.find_by_mrn(mrn_number):
+        print(f"Patient 😷:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}")
         for prescription in patient.prescriptions():
-            print(f"Prescription:\n\tMedication name: {prescription.medication}.\n\tQty: {prescription.quantity}.\tRefills: {prescription.refills}.\n\tPatient\'s name: {patient.name}.")
+            print(f"Prescription 💊:\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}")
     else:
         print(f'Patient {mrn_number} not found')                    
 
@@ -208,3 +197,13 @@ def validate_input(prompt, property_name, minimum_value, default_value=None):
         print(f"{inpt} is less than minimum required value for {property_name}. Please try again.")
         validate_input(prompt, property_name, minimum_value, default_value)
     return int(inpt)
+
+def validate_string_input(prompt, property_name, default_value=None):
+    inpt = input(prompt)
+    if len(inpt) == 0 and not default_value == None:
+        inpt = default_value
+        print(f'\t👉 Using {inpt} for {property_name}')
+    if len(inpt) == 0 and default_value == None:
+        print(f"{property_name} is required.")
+        inpt = validate_string_input(prompt, property_name, default_value)
+    return inpt    
