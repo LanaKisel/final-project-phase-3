@@ -3,14 +3,11 @@
 from helpers import (
     exit_program,
     list_patients,
-    #find_patient_by_id,
-    
     find_patient_by_mrn,
     find_patient_by_name,
     create_patient,
     update_patient, delete_patient,
     list_prescriptions,
-    #find_prescription_by_id,
     find_prescription_by_rx_number,
     find_prescription_by_name,
     create_prescription,
@@ -38,16 +35,17 @@ def main():
 
         if choice == 1:
             print("Entering Patient's Module...")
-            while user_choice != 6:
+            while user_choice != 7:
                 print('''
                 Please choose an option:
                     1. - View Patients
-                    2. - Find a patient by name 
-                    3. - Add a patient
-                    4. - Edit a patient
-                    5. - Delete a patient 
-                    6. - Go back to main menu
-                    7. - Exit
+                    2. - Find a patient by name
+                    3. - Find a patient by MRN 
+                    4. - Add a new patient
+                    5. - Edit patient
+                    6. - Delete a patient 
+                    7. - Go back to main menu
+                    8. - Exit
                 ''')
 
                 user_choice = int(input())
@@ -56,18 +54,21 @@ def main():
                     list_patients()
 
                 if user_choice ==2:
-                    find_patient_by_name()  
+                    find_patient_by_name()
 
-                if user_choice == 3:
-                    create_patient()
+                if user_choice ==3:
+                    find_patient_by_mrn()      
 
                 if user_choice == 4:
-                    update_patient()
+                    create_patient()
 
                 if user_choice == 5:
+                    update_patient()
+
+                if user_choice == 6:
                     delete_patient()
 
-                if user_choice == 7:
+                if user_choice == 8:
                     exit_program()   
 
         if choice == 2:

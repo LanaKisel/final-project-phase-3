@@ -91,8 +91,8 @@ class Patient:
         type(self).all[self.id] = self
 
     @classmethod
-    def create(cls, name, surname, address, mrn):
-        patient = cls(name, surname, address, mrn)
+    def create(cls, name, surname, address):
+        patient = cls(name, surname, address, cls.generate_mrn())
         patient.save()
         return patient
 
@@ -182,4 +182,15 @@ class Patient:
         CURSOR.execute(sql, (self.id,),)
 
         rows = CURSOR.fetchall()
-        return [Prescription.instance_from_db(row) for row in rows]        
+        return [Prescription.instance_from_db(row) for row in rows]    
+
+    @classmethod
+    def generate_mrn(cls):
+        sql = """
+            SELECT mrn
+            FROM patients
+            ORDER BY mrn desc LIMIT 1
+        """    
+        row = CURSOR.execute(sql).fetchone()
+        return row[0]+1        
+        
