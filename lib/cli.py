@@ -4,13 +4,14 @@ from helpers import (
     exit_program,
     list_patients,
     #find_patient_by_id,
-
+    
     find_patient_by_mrn,
     find_patient_by_name,
     create_patient,
     update_patient, delete_patient,
     list_prescriptions,
-    find_prescription_by_id,
+    #find_prescription_by_id,
+    find_prescription_by_rx_number,
     find_prescription_by_name,
     create_prescription,
     update_prescription,
