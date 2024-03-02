@@ -197,3 +197,10 @@ def validate_string_input(prompt, property_name, default_value=None):
         print(f"{property_name} is required.")
         inpt = validate_string_input(prompt, property_name, default_value)
     return inpt    
+
+def find_patient_by_prescription_id(prescription_id):
+    prescription = Prescription.find_by_id(prescription_id)
+    patient_id = prescription.patient_id
+    #patient = Patient.find_by_id(patient_id)
+    #print(f"Patient 😷:\n\tPatient MRN: {patient.mrn}\n\tName: {patient.name}\t Surname: {patient.surname}\n\tAddress: {patient.address}")
+    return patient_id
