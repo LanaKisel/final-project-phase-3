@@ -14,7 +14,7 @@ In main() I have my multi level menu. Depending on user inputs it performs a cor
 Lastly, the if __name__ == '__main__' block tells the interpreter that this script should only be run if 'lib/cli.py' itself is being called from the command line.
 You can run the CLI with `python lib/cli.py`
 Here's the menu options:
-![Image of CLI menu options](/cli menu options.png)
+![Image of CLI menu options](/cli_menu_options.png)
 
 ## HELPERS
 The helper functions are located in `lib/helpers.py`.
