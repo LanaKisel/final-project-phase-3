@@ -18,8 +18,12 @@ def find_patient():
 def find_patient_by_name():
     name = validate_string_input("Enter patient's name: ", "Patient's name")
     patient = Patient.find_by_name(name)
-    print(f"Patient 😷:\n\tName: {patient.name}\t Surname: {patient.surname}\n\tAddress: {patient.address}") if patient else print(
-        f'Patient {name} not found')
+    if patient:
+        print(f"Patient 😷:\n\tName: {patient.name}\t Surname: {patient.surname}\n\tAddress: {patient.address}")
+        return patient.id    
+    else:
+        print(f'Patient {name} not found')
+        return None    
 
 # def find_patient_by_mrn():
 #     list_patients()
