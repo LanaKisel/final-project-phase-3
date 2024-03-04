@@ -8,13 +8,14 @@ from helpers import (
     create_patient,
     update_patient, delete_patient,
     list_prescriptions,
-    find_prescription,
+    list_prescriptions_and_ask_for_prescription_input,
     find_prescription_by_name,
     create_prescription,
     update_prescription,
     delete_prescription,
     #list_patient_prescriptions,
-    find_patient_by_prescription_id
+    find_patient_by_prescription_id,
+    validate_choice
 )
 from pyfiglet import Figlet
 f = Figlet(font='slant') 
@@ -30,7 +31,7 @@ def main():
                     2. - Prescriptions
                     3. - Exit
         ''')
-        choice = int(input())
+        choice = validate_choice(1,3)
         user_choice = 0
         prescription_choice = 0
         operation_choice = 0
@@ -50,7 +51,7 @@ def main():
                     5. - Exit
                 ''')
 
-                user_choice = int(input())
+                user_choice = validate_choice(1,5)
 
                 if user_choice == 1:
                     list_patients()
@@ -63,11 +64,10 @@ def main():
                                 2. - Return to previous menu
                                 3. - Exit
                         ''')
-                        operation_choice = int(input())
+                        operation_choice = validate_choice(1,3)
                         if operation_choice ==1:                           
                             patient_id = find_patient()
-                            patient_prescription_menu(patient_id)   
-
+                            patient_prescription_menu(patient_id) 
 
                         if operation_choice == 3:
                             exit()   
@@ -93,9 +93,8 @@ def main():
                     3. - Exit
                 ''')
 
-                prescription_choice = int(input())
+                prescription_choice = validate_choice(1,3)
                 if prescription_choice ==1:
-                    breakpoint()
                     list_prescriptions()                    
                     print("What would you like to do next?")
                     prescription_operation = 0
@@ -106,7 +105,7 @@ def main():
                                 2. - Previous menu
                                 3. - Exit
                         ''')
-                        prescription_operation = int(input())
+                        prescription_operation = validate_choice(1,3)
 
                         if prescription_operation == 1:
                             prescription_id = find_prescription()
@@ -121,13 +120,14 @@ def main():
                                         4. - Previous menu
                                         5. - Exit
                                 ''')
-                                prescription_operation_choice = int(input())
+                                prescription_operation_choice = validate_choice(1,5)
                                 if prescription_operation_choice == 1:
                                     patient_prescription_menu(patient_id)
                                 if prescription_operation_choice == 2:
                                     update_prescription(prescription_id)
                                 if prescription_operation_choice == 3:
                                     delete_prescription(prescription_id)
+                                    prescription_operation_choice =4
                                 if prescription_operation_choice == 5:
                                     exit()   
                         if prescription_operation ==3:
@@ -148,7 +148,7 @@ def patient_prescription_menu(patient_id):
                 5. - Exit
         ''') 
 
-        patient_operations_choice = int(input())
+        patient_operations_choice = validate_choice(1,5)
         
         if patient_operations_choice == 1:
             update_patient(patient_id)
@@ -163,15 +163,12 @@ def patient_prescription_menu(patient_id):
                         4. - Return to previous menu
                         5. - Exit   
                 ''')
-                patient_prescription_operation_choice = int(input())
+                patient_prescription_operation_choice = validate_choice(1,5)
 
                 if patient_prescription_operation_choice == 1:                                        
-                    list_prescriptions(patient_id)
-
-                    prescription_id = list_prescriptions(patient_id)
+                    prescription_id = list_prescriptions_and_ask_for_prescription_input(patient_id)
                     if prescription_id == None:
                         continue
-
                     print("What would you like to do next?")    
                     rx_operation_choice = 0
                     while rx_operation_choice != 3:
@@ -182,12 +179,13 @@ def patient_prescription_menu(patient_id):
                                 3. - Return to previous menu
                                 4. - Exit
                             ''')                                        
-                        rx_operation_choice = int(input())
+                        rx_operation_choice = validate_choice(1,4)
 
                         if rx_operation_choice == 1:
                             update_prescription(prescription_id)
                         if rx_operation_choice ==2:
                             delete_prescription(prescription_id)
+                            rx_operation_choice = 3
                         if rx_operation_choice ==4:
                             exit()        
                     
@@ -205,12 +203,13 @@ def patient_prescription_menu(patient_id):
                                 3. - Return to previous menu
                                 4. - Exit
                             ''')
-                        named_prescription_operation_choice = int(input())
+                        named_prescription_operation_choice = validate_choice(1,4)
 
                         if named_prescription_operation_choice ==1:
                             update_prescription(prescription_id)
                         if named_prescription_operation_choice ==2:
                             delete_prescription(prescription_id)
+                            named_prescription_operation_choice = 3
                         if named_prescription_operation_choice ==4:
                             exit()
                             
@@ -220,9 +219,10 @@ def patient_prescription_menu(patient_id):
                     exit()                    
             
         if patient_operations_choice == 3:
-            delete_patient(patient_id)    
+            delete_patient(patient_id)
+            patient_operations_choice = 4    
         if patient_operations_choice == 5:
-            exit() 
+            exit()         
 
 if __name__ == "__main__":
     main()

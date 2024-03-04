@@ -194,4 +194,6 @@ class Prescription:
             ORDER BY rx_number desc LIMIT 1
         """    
         row = CURSOR.execute(sql).fetchone()
+        if row == None:
+            return 1000
         return row[0]+1        

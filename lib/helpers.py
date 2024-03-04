@@ -6,10 +6,12 @@ def list_patients():
     patients = Patient.get_all()
     for index, patient in enumerate(patients):
         print(f"{index+1}. Patient 😷:{patient.name} {patient.surname}")
+    return len(patients)
 
 def find_patient():
-    list_patients()
-    patient_number = int(input("Enter number of the patient from the list above: "))
+    number_of_patients = list_patients()
+    print("Enter number of the patient from the list above: ")
+    patient_number = validate_choice(1, number_of_patients)
     patient = Patient.get_all()[patient_number-1]
     print(f"Patient 😷:\n\tPatient MRN: {patient.mrn}\n\tName: {patient.name}\t Surname: {patient.surname}\n\tAddress: {patient.address}") if patient else print(
         f'Patient {name} not found')
@@ -70,18 +72,19 @@ def list_prescriptions(patient_id= None):
             print(f"{index +1}. Prescription💊:\n\tRX number: {prescription.rx_number}\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\t Refills: {prescription.refills}\nPatient😷: {patient.name} {patient.surname}\n\tPatient MRN: {patient.mrn}")
     if len(patient.prescriptions())==0:
         print("There are no prescriptions for this patient")
-        return False
-    return True    
+        return 0
+    return len(patient.prescriptions())    
 
-def  find_prescription(patient_id= None):
-    has_prescriptions = list_prescriptions(patient_id) 
-    if has_prescriptions:
-        prescription_number = int(input("Enter number of the prescription from the list above: "))
+def  list_prescriptions_and_ask_for_prescription_input(patient_id= None):
+    number_of_prescriptions = list_prescriptions(patient_id) 
+    if number_of_prescriptions >0:
+        print("Enter number of the prescription from the list above: ")
+        prescription_number = validate_choice(1, number_of_prescriptions)
         if patient_id == None:
             prescription =  Prescription.get_all()[prescription_number-1]
         else:
             patient = Patient.find_by_id(patient_id)
-            prescription = patient.prescriptions()[prescription_number-122]    
+            prescription = patient.prescriptions()[prescription_number-1]    
         # prescriptions = Prescription.get_all()
         # if not patient_id  == None:
         #     prescriptions = [prescription for prescription in prescriptions if prescription.patient_id == patient_id]
@@ -92,8 +95,8 @@ def  find_prescription(patient_id= None):
 
     
 def find_prescription_by_name(id=None):
-    has_prescriptions = list_prescriptions(id) 
-    if has_prescriptions:
+    number_of_prescriptions = list_prescriptions(id) 
+    if number_of_prescriptions >0:
         medication = validate_string_input("Enter medication name: ", "Medication name")
         prescription = Prescription.find_by_name(medication)
         if prescription:
@@ -185,6 +188,14 @@ def validate_string_input(prompt, property_name, default_value=None):
         print(f"{property_name} is required.")
         inpt = validate_string_input(prompt, property_name, default_value)
     return inpt    
+
+def validate_choice(min, max):
+    input_text = input()
+    while not input_text.isdigit() or int(input_text)<min or int(input_text)>max:
+        print(f"Please enter the value between {min} and {max}")
+        input_text = input()
+    return int(input_text)
+
 
 def find_patient_by_prescription_id(prescription_id):
     prescription = Prescription.find_by_id(prescription_id)
