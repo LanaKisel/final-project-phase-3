@@ -24,7 +24,7 @@ def find_patient_by_name():
     else:
         print(f'Patient {name} not found')
         return None    
-        
+
 def create_patient():
     name = validate_string_input("Enter patient's name: ", "Patient's name")
     surname = validate_string_input("Enter patient's surname: ", "Patient's surname")
@@ -44,30 +44,31 @@ def update_patient(id):
             patient.surname = surname
             address = validate_string_input("Enter patient's address: ", "Patient's address", patient.address)
             patient.address = address
-            mrn = validate_input("Enter patient's medical record number: ", "MRN", 1, patient.mrn)
-            patient.mrn = mrn
             patient.update()
-            print(f'Successfully updated patient 😷:\n\tName: {patient.name}\t Surname: {patient.surname}\n\tAddress: {patient.address}')
+            print(f'Successfully updated patient 😷:\n\tMRN: {patient.mrn}\n\tName: {patient.name}\t Surname: {patient.surname}\n\tAddress: {patient.address}')
         except Exception as exc:
             print("Error updating patient: ", exc)
     else:
-        print(f'Patient {id} not found') 
+        print(f'Patient not found') 
 
 def delete_patient(id):
     if patient := Patient.find_by_id(id):
         patient.delete()
         print(f'Successfully deleted patient 😷\n\tMRN: {patient.mrn}\n\tName: {patient.name}\t Surname: {patient.surname}\n\tAddress:{patient.address}')
     else:
-        print(f'Patient number {mrn_number} not found')
+        print(f'Patient not found')
 
 def list_prescriptions(patient_id= None):
-    prescriptions = Prescription.get_all()
-    if not patient_id  == None:
-        prescriptions = [prescription for prescription in prescriptions if prescription.patient_id == patient_id]
-    for index, prescription in enumerate(prescriptions):
-        patient = Patient.find_by_id(prescription.patient_id)
-        print(f"{index +1}. Prescription💊:\n\tRX number: {prescription.rx_number}\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\t Refills: {prescription.refills}\nPatient😷:\n\tName: {patient.name}\t Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}")
-    if len(prescriptions)==0:
+    patient = Patient.find_by_id(patient_id)
+    if patient_id:
+        for index, prescription in enumerate(patient.prescriptions()):        
+    # prescriptions = Prescription.get_all()
+    # if not patient_id  == None:
+    #     prescriptions = [prescription for prescription in prescriptions if prescription.patient_id == patient_id]
+    # for index, prescription in enumerate(prescriptions):
+        # patient = Patient.find_by_id(prescription.patient_id)
+            print(f"{index +1}. Prescription💊:\n\tRX number: {prescription.rx_number}\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\t Refills: {prescription.refills}\nPatient😷: {patient.name} {patient.surname}\n\tPatient MRN: {patient.mrn}")
+    if len(patient.prescriptions())==0:
         print("There are no prescriptions for this patient")
         return False
     return True    
@@ -76,14 +77,20 @@ def  find_prescription(patient_id= None):
     has_prescriptions = list_prescriptions(patient_id) 
     if has_prescriptions:
         prescription_number = int(input("Enter number of the prescription from the list above: "))
-        prescriptions = Prescription.get_all()
-        if not patient_id  == None:
-            prescriptions = [prescription for prescription in prescriptions if prescription.patient_id == patient_id]
-        prescription = prescriptions[prescription_number-1]   
+        if patient_id == None:
+            prescription =  Prescription.get_all()[prescription_number-1]
+        else:
+            patient = Patient.find_by_id(patient_id)
+            prescription = patient.prescriptions()[prescription_number-122]    
+        # prescriptions = Prescription.get_all()
+        # if not patient_id  == None:
+        #     prescriptions = [prescription for prescription in prescriptions if prescription.patient_id == patient_id]
+        # prescription = prescriptions[prescription_number-1]   
         print(f"Prescription💊:\n\tRX number: {prescription.rx_number}\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\t Refills: {prescription.refills}")
         return prescription.id    
     return None    
 
+    
 def find_prescription_by_name(id=None):
     has_prescriptions = list_prescriptions(id) 
     if has_prescriptions:
@@ -96,14 +103,14 @@ def find_prescription_by_name(id=None):
             print(f'Prescription {medication} not found')  
     return None 
 
-def find_prescription_by_rx_number():
-    rx_number = validate_input("Enter prescription number: ", "rx_number", 1)
-    prescription = Prescription.find_by_rx_number(rx_number)
-    if prescription:
-        patient = Patient.find_by_id(prescription.patient_id)
-        print(f"Prescription:\n\tMedication name: {prescription.medication}.\n\tQty: {prescription.quantity}.\tRefills: {prescription.refills}.\nPatient:\n\tName: {patient.name}\tSurname: {patient.surname}\n\tPatient MRN: {patient.mrn}") 
-    else:
-        print(f'Prescription {rx_number} not found')        
+# def find_prescription_by_rx_number():
+#     rx_number = validate_input("Enter prescription number: ", "rx_number", 1)
+#     prescription = Prescription.find_by_rx_number(rx_number)
+#     if prescription:
+#         patient = Patient.find_by_id(prescription.patient_id)
+#         print(f"Prescription:\n\tMedication name: {prescription.medication}.\n\tQty: {prescription.quantity}.\tRefills: {prescription.refills}.\nPatient:\n\tName: {patient.name}\tSurname: {patient.surname}\n\tPatient MRN: {patient.mrn}") 
+#     else:
+#         print(f'Prescription {rx_number} not found')        
 
 def create_prescription(id):
     medication = validate_string_input("Enter medication name: ", "Medication name")
@@ -113,9 +120,9 @@ def create_prescription(id):
         patient = Patient.find_by_id(id)
         if patient:
             prescription= Prescription.create(medication, quantity, refills, patient.id)
-            print(f'Successfully created prescription.💊\n\tPrescription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}\n\tPatient 😷:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
+            print(f'Successfully created prescription.💊\n\tPatient 😷: {patient.name} {patient.surname}\n\tPrescription rx_number: {prescription.rx_number}.\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}')
         else:
-            print(f"Patient with MRN: {mrn} is not found ")             
+            print(f"Patient not found ")             
     except Exception as exc:
         print("Error creating new prescription", exc)    
 
@@ -135,7 +142,7 @@ def update_prescription(id):
         except Exception as exc:
             print(f'Error updating prescription: ', exc) 
     else:
-        print(f'Prescription {rx_number} not found')
+        print(f'Prescription not found')
 
 def delete_prescription(id):
     if prescription := Prescription.find_by_id(id):
@@ -143,14 +150,14 @@ def delete_prescription(id):
         prescription.delete()
         print(f'Successfully deleted prescription💊:\n\tRX number: {prescription.rx_number}\n\tMedication name:{prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}\n\tPatient😷:\n\tName: {patient.name} Surname: {patient.surname}\n\tPatient MRN: {patient.mrn}')
     else:
-        print(f'Prescription {id} not found')
+        print(f'Prescription not found')
 
-def list_patient_prescriptions(id):    
-    if patient := Patient.find_by_id(id):
-        for prescription in patient.prescriptions():
-            print(f"Prescription 💊:\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}")
-    else:
-        print(f'Patient {id} not found')                    
+# def list_patient_prescriptions(id):    
+#     if patient := Patient.find_by_id(id):
+#         for prescription in patient.prescriptions():
+#             print(f"Prescription 💊:\n\tMedication name: {prescription.medication}\n\tQty: {prescription.quantity}\tRefills: {prescription.refills}")
+#     else:
+#         print(f'Patient not found')                    
 
 def exit_program():
     print("Goodbye!👋")

@@ -15,7 +15,7 @@ def seed_database():
     ondansetron = Prescription.create(345624, "ondansetron", 30, 3, 1)
     metronidazole = Prescription.create(235738, "metronidazole", 7, 0, 1)
     amoxicillin = Prescription.create(124860, "amoxicillin", 21, 0, 2)
-    ibuprofen = Prescription.create(495786, "ibuprofen", 30, 3, 2 ) 
+    ibuprofen = Prescription.create(495786,"ibuprofen", 30, 3, 2 ) 
     
 seed_database()
 print("Seeded database")    

@@ -13,7 +13,7 @@ from helpers import (
     create_prescription,
     update_prescription,
     delete_prescription,
-    list_patient_prescriptions,
+    #list_patient_prescriptions,
     find_patient_by_prescription_id
 )
 from pyfiglet import Figlet
@@ -95,7 +95,8 @@ def main():
 
                 prescription_choice = int(input())
                 if prescription_choice ==1:
-                    list_prescriptions()
+                    breakpoint()
+                    list_prescriptions()                    
                     print("What would you like to do next?")
                     prescription_operation = 0
                     while prescription_operation !=2:
@@ -141,7 +142,7 @@ def patient_prescription_menu(patient_id):
         print('''
             Please choose an option:
                 1. - Edit patient's personal information
-                2. - Patient's prescriptions
+                2. - Patient's prescriptions menu
                 3. - Delete a patient
                 4. - Return to previous menu
                 5. - Exit
@@ -156,7 +157,7 @@ def patient_prescription_menu(patient_id):
             while patient_prescription_operation_choice !=4:                                
                 print('''
                     What would you like to do next?
-                        1. - View All prescriptions
+                        1. - View patient's prescriptions
                         2. - Find prescription by medication
                         3. - Add a prescription
                         4. - Return to previous menu
@@ -165,9 +166,12 @@ def patient_prescription_menu(patient_id):
                 patient_prescription_operation_choice = int(input())
 
                 if patient_prescription_operation_choice == 1:                                        
-                    prescription_id = find_prescription(patient_id)
+                    list_prescriptions(patient_id)
+
+                    prescription_id = list_prescriptions(patient_id)
                     if prescription_id == None:
                         continue
+
                     print("What would you like to do next?")    
                     rx_operation_choice = 0
                     while rx_operation_choice != 3:

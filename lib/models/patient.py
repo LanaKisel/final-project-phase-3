@@ -83,7 +83,6 @@ class Patient:
             INSERT INTO patients (name, surname, address, mrn)
             VALUES (?, ?, ?, ?)
         """
-
         CURSOR.execute(sql, (self.name, self.surname, self.address, self.mrn))
         CONN.commit()
 
@@ -91,27 +90,29 @@ class Patient:
         type(self).all[self.id] = self
 
     @classmethod
-    def create(cls, name, surname, address):
-        patient = cls(name, surname, address, cls.generate_mrn())
+    def create(cls, name, surname, address, mrn=None):
+        if mrn == None:
+            patient = cls(name, surname, address, cls.generate_mrn())
+        else:
+            patient = cls(name, surname, address, mrn)    
         patient.save()
         return patient
 
     def update(self):
         sql = """
             UPDATE patients
-            SET name = ?, surname = ?, address = ?, mrn = ? 
+            SET name = ?, surname = ?, address = ? 
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.name, self.surname, self.address, self.mrn, self.id))
+        CURSOR.execute(sql, (self.name, self.surname, self.address, self.id))
         CONN.commit()
 
     def delete(self):
         sql = """
             DELETE FROM patients
-            WHERE mrn = ?
+            WHERE id = ?
         """
-
-        CURSOR.execute(sql, (self.mrn,))
+        CURSOR.execute(sql, (self.id,))
         CONN.commit()
 
         del type(self).all[self.id]
@@ -151,16 +152,16 @@ class Patient:
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    @classmethod
-    def find_by_mrn(cls, mrn):
-        sql = """
-            SELECT *
-            FROM patients
-            WHERE mrn = ?
-        """
+    # @classmethod
+    # def find_by_mrn(cls, mrn):
+    #     sql = """
+    #         SELECT *
+    #         FROM patients
+    #         WHERE mrn = ?
+    #     """
 
-        row = CURSOR.execute(sql, (mrn,)).fetchone()
-        return cls.instance_from_db(row) if row else None
+    #     row = CURSOR.execute(sql, (mrn,)).fetchone()
+    #     return cls.instance_from_db(row) if row else None
 
     @classmethod
     def find_by_name(cls, name):
@@ -169,7 +170,6 @@ class Patient:
             FROM patients
             WHERE name is ?
         """
-
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
@@ -193,4 +193,3 @@ class Patient:
         """    
         row = CURSOR.execute(sql).fetchone()
         return row[0]+1        
-        
