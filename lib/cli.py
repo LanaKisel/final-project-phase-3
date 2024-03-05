@@ -13,7 +13,6 @@ from helpers import (
     create_prescription,
     update_prescription,
     delete_prescription,
-    #list_patient_prescriptions,
     find_patient_by_prescription_id,
     validate_choice
 )
@@ -41,7 +40,7 @@ def main():
         if choice  == 1:
             print("Entering Patient's Module...")
             user_choice = 0
-            while user_choice != 5:
+            while user_choice != 4:
                 print('''
                 Please choose an option:
                     1. - View Patients
@@ -108,7 +107,7 @@ def main():
                         prescription_operation = validate_choice(1,3)
 
                         if prescription_operation == 1:
-                            prescription_id = find_prescription()
+                            prescription_id = list_prescriptions_and_ask_for_prescription_input()
                             patient_id = find_patient_by_prescription_id(prescription_id)
                             prescription_operation_choice = 0
                             while prescription_operation_choice !=4:                                

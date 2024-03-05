@@ -10,7 +10,7 @@ def seed_database():
     Patient.create_table()
     Prescription.create_table()
 
-    lilly = Patient.create("Lilly", "Jefferson", "982 Fadel Overpass Suite 578", 134597)
+    lilly = Patient.create("Lilly", "Jefferson", "982 Fade Overpass Suite 578", 134597)
     paul = Patient.create("Paul", "Griffin", "5167 Boyle Plains", 345086)
     ondansetron = Prescription.create("ondansetron", 30, 3, 1)
     metronidazole = Prescription.create("metronidazole", 7, 0, 1)

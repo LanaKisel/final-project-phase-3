@@ -177,16 +177,6 @@ class Prescription:
         return cls.instance_from_db(row) if row else None
 
     @classmethod
-    def find_by_rx_number(cls, rx_number):
-        sql = """
-            SELECT *
-            FROM prescriptions
-            WHERE rx_number = ?
-        """
-        row = CURSOR.execute(sql, (rx_number,)).fetchone()
-        return cls.instance_from_db(row) if row else None
-
-    @classmethod
     def generate_rx_number(cls):
         sql = """
             SELECT rx_number
@@ -195,5 +185,5 @@ class Prescription:
         """    
         row = CURSOR.execute(sql).fetchone()
         if row == None:
-            return 1000
+            return 1000  #decided to start rx_number from 1000 
         return row[0]+1        

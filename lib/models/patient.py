@@ -152,17 +152,6 @@ class Patient:
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    # @classmethod
-    # def find_by_mrn(cls, mrn):
-    #     sql = """
-    #         SELECT *
-    #         FROM patients
-    #         WHERE mrn = ?
-    #     """
-
-    #     row = CURSOR.execute(sql, (mrn,)).fetchone()
-    #     return cls.instance_from_db(row) if row else None
-
     @classmethod
     def find_by_name(cls, name):
         sql = """
