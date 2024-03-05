@@ -27,13 +27,13 @@ After I create functions:
     create_patient,
     update_patient, delete_patient,
     list_prescriptions,
-    find_prescription,
+    list_prescriptions_and_ask_for_prescription_input,
     find_prescription_by_name,
     create_prescription,
     update_prescription,
     delete_prescription,
-    list_patient_prescriptions,
-    find_patient_by_prescription_id
+    find_patient_by_prescription_id,
+    validate_choice
 I created validate_input() function which takes in a few parameters: a prompt (a message specific to the property), property_name(), minimum_value and a default_value, which is optional. This function checks if the input is an empty string, and in case of editing prescription or patient information, when empty string is entered the value defaults to the original value. It also checks if the input is an integer and if it's greater than minimum_value parameter. If not, it'll print a helpful message using the property_name attribute.
 
 ## MODELS

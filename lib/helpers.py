@@ -6,7 +6,7 @@ def list_patients():
     patients = Patient.get_all()
     for index, patient in enumerate(patients):
         print(f"{index+1}. Patient 😷:{patient.name} {patient.surname}")
-    return len(patients)
+    return len(patients)  #returning len(patients) to validate the input choice
 
 def find_patient():
     number_of_patients = list_patients()   #list_patients will display a list of patients and return the number of patients listed (for validating the choice)
@@ -78,7 +78,7 @@ def list_prescriptions(patient_id= None):
         if len(prescriptions)==0:
             print("There are no prescriptions in the system")
             return 0
-        return len(prescriptions)    
+        return len(prescriptions) #returning len(prescriptions) to validate the input choice   
 
 def  list_prescriptions_and_ask_for_prescription_input(patient_id= None):
     number_of_prescriptions = list_prescriptions(patient_id) #list_prescriptions will display a list of prescriptions and return the number of prescriptions listed (for validating the choice)
